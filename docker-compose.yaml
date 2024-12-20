@@ -1,0 +1,41 @@
+version: '2.1'
+services:
+  core:
+    image: dnif/core:v9.2.5
+    network_mode: 'host'
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - /DNIF/CO:/dnif
+      - /DNIF/common:/common
+      - /DNIF/backup/core:/backup
+    environment:
+      - 'CORE_IP=1.1.1.1'
+      - 'PROXY='
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    container_name: core-v9
+  datanode-master:
+    privileged: true
+    image: dnif/datanode:v9.2.5
+    network_mode: 'host'
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - /DNIF/DL:/dnif
+      - /run:/run
+      - /opt:/opt
+      - /etc/systemd/system:/etc/systemd/system
+      - /DNIF/common:/common
+      - /DNIF/backup/dn:/backup
+    environment:
+      - 'CORE_IP=1.1.1.1'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    container_name: datanode-master-v9
